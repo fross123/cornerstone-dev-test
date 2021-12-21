@@ -1,4 +1,5 @@
 import { hooks } from '@bigcommerce/stencil-utils';
+import { defaultModal, showAlertModal } from './global/modal';
 import CatalogPage from './catalog';
 import compareProducts from './global/compare-products';
 import FacetedSearch from './common/faceted-search';
@@ -48,26 +49,30 @@ export default class Category extends CatalogPage {
         this.ariaNotifyNoProducts();
 
         let btn = document.querySelector('.add-all-to-cart');
-        $('.add-all-to-cart').on('click', () => this.addAllToCart());
+        let cart_id = btn.getAttribute('data-cart-id');
+        $('.add-all-to-cart').on('click', () => this.addAllToCart(cart_id));
     }
 
     
 
-    addAllToCart() {
-        var products = this.context.categoryProducts;
-
+    addAllToCart(id) {
+        let products = this.context.categoryProducts;
         let item_ids = []
         products.forEach(function (e) {
             console.log(e.id);
             item_ids.push({'quantity': 1, 'productId': e.id});
-            // .always(function() {
-            //     return window.location = "/cart.php"
-            // }); 
         })
         console.log(item_ids);
 
-        createCart(`/api/storefront/carts`, {"lineItems": item_ids})
-        .catch(error => console.error(error));
+        addCartItem(`/api/storefront/carts/`, id, {"lineItems": item_ids})
+        .then(response => {
+            if (response) {
+                let modal = defaultModal()
+                modal.open()
+                modal.updateContent(`<h3>You sent all the items in this category to your cart.</h3>`, { wrap: true });
+            }
+        })
+        .catch(err => console.log(err));
     }
 
     ariaNotifyNoProducts() {
@@ -134,5 +139,17 @@ function createCart(url, cartItems) {
         },
         body: JSON.stringify(cartItems),
     })
-        .then(response => response.json());
+    .then(response => response.json());
+};
+
+function addCartItem(url, cartId, cartItems) {
+    return fetch(url + cartId + '/items', {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(cartItems),
+    })
+    .then(response => response.json());
 };

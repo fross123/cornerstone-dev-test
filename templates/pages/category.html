@@ -50,7 +50,11 @@ category:
     {{/if}}
 
     <div class="page-content" id="product-listing-container">
-        <button class="button add-all-to-cart" onclick="console.log('click_me')">Add All To Cart</button>
+        <button class="button add-all-to-cart" data-cart-id="{{cart_id}}">Add All To Cart</button>
+        
+        {{#if cart.items.length '>' 0}}
+        <button class="button">REMOVE EVERYTHING FROM CART :)</button>
+        {{/if}}
         {{> components/category/product-listing}}
         {{{region name="category_below_content"}}}
     </div>
