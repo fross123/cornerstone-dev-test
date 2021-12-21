@@ -46,6 +46,28 @@ export default class Category extends CatalogPage {
         $('a.reset-btn').on('click', () => this.setLiveRegionsAttributes($('span.reset-message'), 'status', 'polite'));
 
         this.ariaNotifyNoProducts();
+
+        let btn = document.querySelector('.add-all-to-cart');
+        $('.add-all-to-cart').on('click', () => this.addAllToCart());
+    }
+
+    
+
+    addAllToCart() {
+        var products = this.context.categoryProducts;
+
+        let item_ids = []
+        products.forEach(function (e) {
+            console.log(e.id);
+            item_ids.push({'quantity': 1, 'productId': e.id});
+            // .always(function() {
+            //     return window.location = "/cart.php"
+            // }); 
+        })
+        console.log(item_ids);
+
+        createCart(`/api/storefront/carts`, {"lineItems": item_ids})
+        .catch(error => console.error(error));
     }
 
     ariaNotifyNoProducts() {
@@ -102,3 +124,15 @@ export default class Category extends CatalogPage {
         });
     }
 }
+
+function createCart(url, cartItems) {
+    return fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(cartItems),
+    })
+        .then(response => response.json());
+};

@@ -6,6 +6,7 @@ category:
 ---
 {{inject "categoryProductsPerPage" theme_settings.categorypage_products_per_page}}
 {{inject "categoryId" category.id}}
+{{inject "categoryProducts" category.products}}
 {{#partial "head"}}
     {{#if pagination.category.previous}}
         <link rel="prev" href="{{pagination.category.previous}}">
@@ -49,6 +50,7 @@ category:
     {{/if}}
 
     <div class="page-content" id="product-listing-container">
+        <button class="button add-all-to-cart" onclick="console.log('click_me')">Add All To Cart</button>
         {{> components/category/product-listing}}
         {{{region name="category_below_content"}}}
     </div>
