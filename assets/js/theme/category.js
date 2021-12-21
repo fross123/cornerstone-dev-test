@@ -130,17 +130,6 @@ export default class Category extends CatalogPage {
     }
 }
 
-function createCart(url, cartItems) {
-    return fetch(url, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(cartItems),
-    })
-    .then(response => response.json());
-};
 
 function addCartItem(url, cartId, cartItems) {
     return fetch(url + cartId + '/items', {
