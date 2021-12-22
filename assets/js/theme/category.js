@@ -4,6 +4,7 @@ import CatalogPage from './catalog';
 import compareProducts from './global/compare-products';
 import FacetedSearch from './common/faceted-search';
 import { createTranslationDictionary } from '../theme/common/utils/translations-utils';
+import utils from '@bigcommerce/stencil-utils';
 
 export default class Category extends CatalogPage {
     constructor(context) {
@@ -67,6 +68,14 @@ export default class Category extends CatalogPage {
                 let modal = defaultModal()
                 modal.open()
                 modal.updateContent(`<h3>Cart Cleared.</h3>`, { wrap: true });
+
+                // Toggle cart pill off
+                $('.cart-quantity')
+                    .text("")
+                    .toggleClass('countPill');
+                if (utils.tools.storage.localStorageAvailable()) {
+                    localStorage.setItem('cart-quantity', 0);
+                }
             }
         })
         .catch(error => console.log(error));
@@ -98,6 +107,22 @@ export default class Category extends CatalogPage {
                 let modal = defaultModal()
                 modal.open()
                 modal.updateContent(`<h3>All the items in this category added to cart.</h3>`, { wrap: true });
+            }
+
+            // Upate cart quantity pill
+            if (utils.tools.storage.localStorageAvailable()){
+                var currQuant = localStorage.getItem('cart-quantity');
+                
+            } else {
+                var currQuant = 0;
+            }
+            var newQuant = parseInt(currQuant) + item_ids.length;
+            $('.cart-quantity')
+                .text(newQuant)
+                .toggleClass('countPill--positive', newQuant > 0);
+
+            if (utils.tools.storage.localStorageAvailable()) {
+                localStorage.setItem('cart-quantity', newQuant);
             }
         })
         .catch(err => console.log(err));
