@@ -1,5 +1,5 @@
 import { hooks } from '@bigcommerce/stencil-utils';
-import { defaultModal, showAlertModal } from './global/modal';
+import { defaultModal } from './global/modal';
 import CatalogPage from './catalog';
 import compareProducts from './global/compare-products';
 import FacetedSearch from './common/faceted-search';
@@ -48,23 +48,44 @@ export default class Category extends CatalogPage {
 
         this.ariaNotifyNoProducts();
 
-        let btn = document.querySelector('.add-all-to-cart');
-        let cart_id = btn.getAttribute('data-cart-id');
-        $('.add-all-to-cart').on('click', () => this.addAllToCart(cart_id));
+        let add_cart_id = document.querySelector('.add-all-to-cart').getAttribute('data-cart-id');
+        $('.add-all-to-cart').on('click', () => this.addAllToCart(add_cart_id));
+
+        let cl_cart_id = document.querySelector('.clear-cart').getAttribute('data-cart-id');
+        $('.clear-cart').on('click', () => this.deleteItemsCart(cl_cart_id));
     }
 
-    
+    deleteItemsCart(cartId){
+        fetch('/api/storefront/carts/' + cartId, {
+            method: "DELETE",
+            credentials: "same-origin",
+        })
+        .then(response => {
+            if (response.ok) {
+                let modal = defaultModal()
+                modal.open()
+                modal.updateContent(`<h3>Cart Cleared.</h3>`, { wrap: true });
+            }
+        })
+        .catch(error => console.log(error));
+    }
 
-    addAllToCart(id) {
+    addAllToCart(cartId) {
         let products = this.context.categoryProducts;
         let item_ids = []
         products.forEach(function (e) {
-            console.log(e.id);
             item_ids.push({'quantity': 1, 'productId': e.id});
         })
-        console.log(item_ids);
 
-        addCartItem(`/api/storefront/carts/`, id, {"lineItems": item_ids})
+        fetch(`/api/storefront/carts/` + cartId + '/items', {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ "lineItems": item_ids }),
+        })
+        .then(response => response.json())
         .then(response => {
             if (response) {
                 let modal = defaultModal()
@@ -129,16 +150,3 @@ export default class Category extends CatalogPage {
         });
     }
 }
-
-
-function addCartItem(url, cartId, cartItems) {
-    return fetch(url + cartId + '/items', {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(cartItems),
-    })
-    .then(response => response.json());
-};
