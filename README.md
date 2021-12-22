@@ -26,6 +26,9 @@ Access Code: ```zcolop04rs```
     - onclick calls ```deleteItemsCart()``` on line 60
          - fetch DELETE request to Storefront API.
          - on response, modal is displayed to user.
+
+5. Bonus Banner
+    - Added a banner to ```templates/pages/category.html```.
          
 
 ## Submission Instructions:
