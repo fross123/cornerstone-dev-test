@@ -51,9 +51,9 @@ category:
 
     <div class="page-content" id="product-listing-container">
         <button class="button add-all-to-cart" data-cart-id="{{cart_id}}">Add All To Cart</button>
-        {{cart.items.length}}
+        {{#if cart_id}}
         <button class="button clear-cart" data-cart-id="{{cart_id}}">Clear Cart</button>
-
+        {{/if}}
         {{> components/category/product-listing}}
         {{{region name="category_below_content"}}}
     </div>

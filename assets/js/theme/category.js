@@ -51,8 +51,10 @@ export default class Category extends CatalogPage {
         let add_cart_id = document.querySelector('.add-all-to-cart').getAttribute('data-cart-id');
         $('.add-all-to-cart').on('click', () => this.addAllToCart(add_cart_id));
 
-        let cl_cart_id = document.querySelector('.clear-cart').getAttribute('data-cart-id');
-        $('.clear-cart').on('click', () => this.deleteItemsCart(cl_cart_id));
+        if ($('.clear-cart').length > 0) {
+            let cl_cart_id = document.querySelector('.clear-cart').getAttribute('data-cart-id');
+            $('.clear-cart').on('click', () => this.deleteItemsCart(cl_cart_id));
+        }
     }
 
     deleteItemsCart(cartId){
