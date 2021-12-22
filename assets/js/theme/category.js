@@ -73,13 +73,18 @@ export default class Category extends CatalogPage {
     }
 
     addAllToCart(cartId) {
-        let products = this.context.categoryProducts;
-        let item_ids = []
+        var products = this.context.categoryProducts;
+        var item_ids = [];
         products.forEach(function (e) {
             item_ids.push({'quantity': 1, 'productId': e.id});
         })
 
-        fetch(`/api/storefront/carts/` + cartId + '/items', {
+        if (cartId) {
+            var url = `/api/storefront/carts/` + cartId + '/items';
+        } else {
+            var url = `/api/storefront/carts`;
+        }
+        fetch(url, {
             method: "POST",
             credentials: "same-origin",
             headers: {
@@ -92,7 +97,7 @@ export default class Category extends CatalogPage {
             if (response) {
                 let modal = defaultModal()
                 modal.open()
-                modal.updateContent(`<h3>You sent all the items in this category to your cart.</h3>`, { wrap: true });
+                modal.updateContent(`<h3>All the items in this category added to cart.</h3>`, { wrap: true });
             }
         })
         .catch(err => console.log(err));
