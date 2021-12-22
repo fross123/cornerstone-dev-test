@@ -12,6 +12,22 @@ Access Code: ```zcolop04rs```
     - This component adds a hover_imgage argument which is used to add a 'onmouseover' attribute to the ```<img>``` tag.
         - This implementation requires more work before production. 
 
+3. Add All To Cart Button
+    - Edits made to category.js found at ```/assets/js/theme/category.js```
+    - Button added to category.html at ```templates/pages/category.html``` on line 53
+    - onclick calls ```addAllToCart()``` on line 75
+        - fetch POST request to the Storefront API
+        - on response, modal is displayed to user.
+
+4. Clear Cart Button
+    - Edits made to category.js found at ```/assets/js/theme/category.js```
+    - Button added to category.html at ```templates/pages/category.html``` on line 55
+        - Button is only visible if cart exisits.
+    - onclick calls ```deleteItemsCart()``` on line 60
+         - fetch DELETE request to Storefront API.
+         - on response, modal is displayed to user.
+         
+
 ## Submission Instructions:
 
 Setup 
